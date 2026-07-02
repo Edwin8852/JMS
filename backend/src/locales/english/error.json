@@ -1,0 +1,6 @@
+{
+  "internalServer": "Internal Server Error",
+  "unauthorized": "Unauthorized access",
+  "forbidden": "Access denied. Unauthorized role.",
+  "notFound": "Resource not found"
+}

@@ -1,0 +1,14 @@
+{
+  "welcome": "Welcome to SDRS Gold Finance ERP",
+  "success": "Operation successful",
+  "dashboard": {
+    "totalRevenue": "Total Revenue",
+    "activeLoans": "Active Loans",
+    "overdueLoans": "Overdue Loans"
+  },
+  "ledger": {
+    "created": "Ledger entry created successfully",
+    "fetched": "Ledger data fetched successfully",
+    "notFound": "Ledger entry not found"
+  }
+}

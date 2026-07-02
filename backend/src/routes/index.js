@@ -1,0 +1,63 @@
+const express = require('express');
+const router = express.Router();
+const authRoutes = require('../modules/auth/auth.routes');
+const goldFinanceRoutes = require('../modules/goldFinance/goldFinance.routes');
+const invoiceRoutes = require('../modules/invoice/invoice.routes');
+const paymentRoutes = require('../modules/payments/payment.routes');
+const customerRoutes = require('../modules/customer/customer.routes');
+const jewelInspectionRoutes = require('../modules/jewelInspection/jewelInspection.routes');
+const goldRateRoutes = require('../modules/goldRates/goldRate.routes');
+const dashboardRoutes = require('../modules/dashboard/dashboard.routes');
+const reportRoutes = require('../modules/reports/reports.routes');
+const chitFundRoutes = require('../modules/chitFund/chitfund.routes');
+const pdfRoutes = require('../modules/pdf/pdf.routes');
+const ledgerRoutes = require('../modules/ledger/ledger.routes');
+const userRoutes = require('../modules/users/users.routes');
+const notificationRoutes = require('../modules/notification/notification.routes');
+const supportRoutes = require('../modules/support/support.routes');
+const documentRoutes = require('../modules/documents/document.routes');
+const aiRoutes = require('../modules/ai/ai.routes');
+const orderRoutes = require('../modules/order/order.routes');
+const goldLoanRoutes = require('../modules/goldLoan/goldLoan.routes');
+const schemeRoutes = require('../modules/goldLoanScheme/scheme.routes');
+const liveRateRoutes = require('../modules/liveRates/routes/liveRate.routes');
+const kycRoutes = require('../modules/kyc/kyc.routes');
+const walkInRoutes = require('../modules/walkIn/walkIn.routes');
+const loanPaymentRoutes = require('../modules/loanPayments/loanPayment.routes');
+const chitPaymentRoutes = require('../modules/chitPayments/chitPayment.routes');
+const inventoryRoutes = require('../modules/inventory/inventory.routes');
+const settingsRoutes = require('../modules/settings/settings.routes');
+
+router.use('/auth', authRoutes);
+router.use('/kyc', kycRoutes);
+router.use('/gold-finance', goldFinanceRoutes);
+router.use('/walk-in', walkInRoutes);
+
+router.use('/invoices', invoiceRoutes);
+router.use('/payments', paymentRoutes);
+router.use('/customers', customerRoutes);
+router.use('/jewel-inspection', jewelInspectionRoutes);
+router.use('/gold-rates', goldRateRoutes);
+router.use('/gold-rate',  goldRateRoutes); // Canonical alias: GET /api/gold-rate/latest
+router.use('/live-rates', liveRateRoutes);
+router.use('/market-rates', liveRateRoutes); // Centralized alias
+router.use('/dashboard', dashboardRoutes);
+router.use('/reports', reportRoutes);
+router.use('/chit-fund', chitFundRoutes);
+router.use('/pdf', pdfRoutes);
+router.use('/ledger', ledgerRoutes);
+router.use('/users', userRoutes);
+router.use('/notification', notificationRoutes);
+router.use('/support', supportRoutes);
+router.use('/documents', documentRoutes);
+  router.use('/ai', aiRoutes);
+  router.use('/orders', orderRoutes);
+router.use('/gold-loans', goldLoanRoutes);
+router.use('/schemes', schemeRoutes);
+router.use('/loan-payments', loanPaymentRoutes);
+router.use('/chit-payments', chitPaymentRoutes);
+router.use('/inventory', inventoryRoutes);
+router.use('/settings', settingsRoutes);
+
+
+module.exports = router;

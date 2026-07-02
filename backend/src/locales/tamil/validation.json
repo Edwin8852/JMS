@@ -1,0 +1,6 @@
+{
+  "invalidEmail": "தவறான மின்னஞ்சல் முகவரி",
+  "requiredField": "{{field}} தேவை",
+  "amountPositive": "தொகை பூஜ்ஜியத்தை விட அதிகமாக இருக்க வேண்டும்",
+  "validationFailed": "சரிபார்ப்பு தோல்வியடைந்தது"
+}

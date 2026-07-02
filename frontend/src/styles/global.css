@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: 45 100% 50%; /* Gold */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    --gold-premium: linear-gradient(135deg, #FDB931 0%, #9E7922 100%);
+  }
+
+  .dark {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 95%;
+  }
+
+  body {
+    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))] antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/70 dark:bg-dark-surface/70 backdrop-blur-md border border-white/20 dark:border-white/10 shadow-soft;
+  }
+  
+  .btn-gold {
+    @apply bg-gold hover:bg-gold-dark text-black font-semibold py-2 px-4 rounded-lg transition-all transform hover:scale-[1.02] active:scale-95 shadow-gold;
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 hover:bg-gold/10 text-gray-500 hover:text-gold;
+  }
+
+  .sidebar-link-active {
+    background: var(--gold-premium);
+    @apply text-white shadow-lg shadow-gold/20 font-bold;
+  }
+
+  .bg-gold-gradient {
+    background: var(--gold-premium);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-dark-border rounded-full;
+}
