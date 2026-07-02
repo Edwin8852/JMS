@@ -20,7 +20,7 @@ import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
-const BACKEND_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api').replace('/api', '');
+const BACKEND_URL = (import.meta.env.VITE_API_URL || 'https://jms-vpf1.onrender.com/api').replace('/api', '');
 
 const AdminKycManagement = () => {
   const { t } = useTranslation();

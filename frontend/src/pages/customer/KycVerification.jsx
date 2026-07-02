@@ -24,7 +24,7 @@ const KycVerification = () => {
   const dispatch = useDispatch();
   const { status, isVerified, loading, error, success, documents, customerData } = useSelector((state) => state.kyc);
   
-  const baseUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api', '') : 'http://localhost:5000';
+  const baseUrl = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api', '') : 'https://jms-vpf1.onrender.com';
   
   const [formData, setFormData] = useState({
     aadharNumber: '',
