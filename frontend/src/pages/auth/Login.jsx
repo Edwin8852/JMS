@@ -30,6 +30,13 @@ const Login = () => {
 
   useEffect(() => {
     document.title = "Login | SDRS Gold Finance";
+    // Non-blocking warm-up ping to wake up Render backend immediately on page load
+    try {
+      const rawUrl = (import.meta.env.VITE_API_URL || 'https://jms-vpf1.onrender.com/api').replace(/\/api\/?$/, '');
+      fetch(rawUrl ? `${rawUrl}/` : '/', { method: 'GET', mode: 'no-cors' }).catch(() => {});
+    } catch (e) {
+      // Ignore background warm-up errors
+    }
   }, []);
 
   const { register, handleSubmit, formState: { errors } } = useForm({
@@ -41,7 +48,8 @@ const Login = () => {
     try {
       const submitStartTime = performance.now();
       const identifier = data.identifier.trim();
-      console.log(`[Login] Submit Clicked at ${submitStartTime.toFixed(2)}ms. Identifier:`, identifier);
+      const targetApiUrl = (import.meta.env.VITE_API_URL || 'https://jms-vpf1.onrender.com/api');
+      console.log(`[Login] Submit Clicked. Target API: ${targetApiUrl} | Identifier:`, identifier);
       const loginData = { password: data.password };
       
       // Smart Identifier Detection

@@ -1,11 +1,14 @@
 import axios from 'axios';
 
+const rawApiUrl = (import.meta.env.VITE_API_URL || 'https://jms-vpf1.onrender.com/api').trim().replace(/\/+$/, '');
+const normalizedBaseURL = rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl}/api`;
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://jms-vpf1.onrender.com/api',
+  baseURL: normalizedBaseURL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 30000, // 30 seconds timeout
+  timeout: 60000, // 60 seconds timeout (tolerates Render free cold starts)
 });
 
 let isCircuitOpen = false;
