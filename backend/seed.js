@@ -74,7 +74,7 @@ async function runSeed() {
         lastName: 'User',
         email: 'kcpavithra23@gmail.com',
         mobile: '9876543212',
-        password: 'pavi2321',
+        password: 'pavi@321',
         role: 'CUSTOMER',
         status: 'ACTIVE',
         isKycVerified: true,
@@ -184,11 +184,11 @@ async function runSeed() {
   } catch (error) {
     // Rollback transaction if there was an error
     await transaction.rollback();
-    
+
     console.error('\n\x1b[31m❌ Seed Failed! Transaction rolled back.\x1b[0m');
     console.error(error.message);
     if (error.errors) {
-       console.error(error.errors.map(e => e.message));
+      console.error(error.errors.map(e => e.message));
     }
     process.exit(1);
   }
