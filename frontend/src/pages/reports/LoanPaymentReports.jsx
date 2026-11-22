@@ -19,7 +19,7 @@ const LoanPaymentReports = () => {
   const handleDownloadInvoice = async (invoiceNumber) => {
     try {
       const token = localStorage.getItem('token');
-      const backendUrl = import.meta.env.VITE_API_URL || 'https://jms-vpf1.onrender.com/api';
+      const backendUrl = import.meta.env.VITE_API_URL || 'https://gold-erp-backend-wk0m.onrender.com/api';
       const response = await fetch(`${backendUrl}/invoices/download-by-number/${invoiceNumber}`, {
         headers: {
           'Authorization': `Bearer ${token}`

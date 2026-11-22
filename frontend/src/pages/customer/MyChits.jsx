@@ -24,7 +24,7 @@ import { toast } from 'react-toastify';
 import { getFullSubscriptionDetails, collectPayment, getAvailableSchemes, enrollSubscriber } from '../../api/chit.api';
 import api from '../../api/axios';
 
-const BACKEND_URL = (import.meta.env.VITE_API_URL || 'https://jms-vpf1.onrender.com/api').replace('/api', '');
+const BACKEND_URL = (import.meta.env.VITE_API_URL || 'https://gold-erp-backend-wk0m.onrender.com/api').replace('/api', '');
 
 const MyChits = () => {
   const { t } = useTranslation();

@@ -32,7 +32,7 @@ const Login = () => {
     document.title = "Login | SDRS Gold Finance";
     // Non-blocking warm-up ping to wake up Render backend immediately on page load
     try {
-      const rawUrl = (import.meta.env.VITE_API_URL || 'https://jms-vpf1.onrender.com/api').replace(/\/api\/?$/, '');
+      const rawUrl = (import.meta.env.VITE_API_URL || 'https://gold-erp-backend-wk0m.onrender.com/api').replace(/\/api\/?$/, '');
       fetch(rawUrl ? `${rawUrl}/` : '/', { method: 'GET', mode: 'no-cors' }).catch(() => {});
     } catch (e) {
       // Ignore background warm-up errors
@@ -48,7 +48,7 @@ const Login = () => {
     try {
       const submitStartTime = performance.now();
       const identifier = data.identifier.trim();
-      const targetApiUrl = (import.meta.env.VITE_API_URL || 'https://jms-vpf1.onrender.com/api');
+      const targetApiUrl = (import.meta.env.VITE_API_URL || 'https://gold-erp-backend-wk0m.onrender.com/api');
       console.log(`[Login] Submit Clicked. Target API: ${targetApiUrl} | Identifier:`, identifier);
       const loginData = { password: data.password };
       

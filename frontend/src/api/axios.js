@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const rawApiUrl = (import.meta.env.VITE_API_URL || 'https://jms-vpf1.onrender.com/api').trim().replace(/\/+$/, '');
+const rawApiUrl = (import.meta.env.VITE_API_URL || 'https://gold-erp-backend-wk0m.onrender.com/api').trim().replace(/\/+$/, '');
 const normalizedBaseURL = rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl}/api`;
 
 const api = axios.create({
