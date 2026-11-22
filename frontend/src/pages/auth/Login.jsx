@@ -39,8 +39,9 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     try {
+      const submitStartTime = performance.now();
       const identifier = data.identifier.trim();
-      console.log("[Login] Submit Clicked. Identifier:", identifier);
+      console.log(`[Login] Submit Clicked at ${submitStartTime.toFixed(2)}ms. Identifier:`, identifier);
       const loginData = { password: data.password };
       
       // Smart Identifier Detection
@@ -54,6 +55,8 @@ const Login = () => {
       }
 
       const result = await dispatch(login(loginData));
+      const loginApiCompleteTime = performance.now();
+      console.log(`[Login] API responded in ${(loginApiCompleteTime - submitStartTime).toFixed(2)}ms`);
       
       if (login.fulfilled.match(result)) {
         const user = result.payload.user;
@@ -62,17 +65,17 @@ const Login = () => {
         console.log(`[Login] Success! User ID: ${user.id} | Role: ${role}`);
         toast.success(`Welcome back, ${user.firstName}!`);
         
-        // Robust Redirection
-        setTimeout(() => {
-          if (role === 'SUPER_ADMIN') {
-            navigate('/super-admin/dashboard');
-          } else if (role === 'ADMIN') {
-            navigate('/admin/dashboard');
-          } else {
-            // Default to Customer Dashboard
-            navigate('/customer/dashboard');
-          }
-        }, 500);
+        // Robust Redirection (Immediate)
+        const navStartTime = performance.now();
+        console.log(`[Login] Initiating navigation at ${navStartTime.toFixed(2)}ms`);
+        if (role === 'SUPER_ADMIN') {
+          navigate('/super-admin/dashboard');
+        } else if (role === 'ADMIN') {
+          navigate('/admin/dashboard');
+        } else {
+          // Default to Customer Dashboard
+          navigate('/customer/dashboard');
+        }
       } else {
         const errorMessage = result.payload || 'Invalid credentials. Please try again.';
         console.error("[Login] Auth Failed:", errorMessage);

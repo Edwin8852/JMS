@@ -66,7 +66,13 @@ const StatCard = React.memo(({ title, value, trend, icon: Icon, color, trendUp }
     </div>
     
     <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{title}</p>
-    <h3 className="text-3xl font-black mt-1 tracking-tight">{value}</h3>
+    <h3 className="text-3xl font-black mt-1 tracking-tight">
+      {value === '...' ? (
+        <span className="animate-pulse bg-gray-200 dark:bg-gray-700 h-8 w-16 inline-block rounded"></span>
+      ) : (
+        value
+      )}
+    </h3>
   </motion.div>
 ));
 
@@ -82,7 +88,6 @@ const Dashboard = () => {
   const loadData = () => {
     console.log('[AdminDashboard] Refreshing dashboard data...');
     dispatch(fetchLoans());
-    dispatch(fetchCustomers());
     dispatch(fetchLiveRates());
     dispatch(fetchLatestGoldRate()); // Keep goldRate slice in sync for loan calculations
   };
@@ -95,6 +100,8 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    const dashMountTime = performance.now();
+    console.log(`[AdminDashboard] Dashboard rendered at ${dashMountTime.toFixed(2)}ms`);
     document.title = "Dashboard | SDRS Gold Finance";
     console.log("[AdminDashboard] Mounting dashboard...");
     loadData();
@@ -146,7 +153,6 @@ const Dashboard = () => {
   const closedLoans = useMemo(() => (loans || []).filter(l => l && (l.status === 'CLOSED' || l.status === 'LOAN_CLOSED')), [loans]);
   const releasedLoans = useMemo(() => (loans || []).filter(l => l && l.status === 'ORNAMENT_RELEASED'), [loans]);
 
-  const pendingKyc = useMemo(() => (customers || []).filter(c => c && (c.kycStatus === 'PENDING' || !c.isKycVerified)), [customers]);
   const totalDisbursed = useMemo(() => activeLoans.reduce((acc, loan) => acc + parseFloat(loan?.loanAmount || 0), 0), [activeLoans]);
   
   const totalInterestCollected = useMemo(() => (loans || []).reduce((acc, loan) => acc + parseFloat(loan?.totalInterestPaid || 0), 0), [loans]);
@@ -205,11 +211,10 @@ const Dashboard = () => {
       {/* Gold Market Overview — Live Rate Widget */}
       <GoldRateWidget />
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-6">
         <StatCard 
           title={t('Active Loans')} 
-          value={activeLoans.length.toString()} 
+          value={loansLoading ? '...' : activeLoans.length.toString()} 
           trend={t('Active')} 
           trendUp={true}
           icon={TrendingUp} 
@@ -217,7 +222,7 @@ const Dashboard = () => {
         />
         <StatCard 
           title={t('Ready For Closure')} 
-          value={readyForClosure.length.toString()} 
+          value={loansLoading ? '...' : readyForClosure.length.toString()} 
           trend={readyForClosure.length > 0 ? t("Action") : t("Clear")} 
           trendUp={readyForClosure.length === 0}
           icon={Clock} 
@@ -225,7 +230,7 @@ const Dashboard = () => {
         />
         <StatCard 
           title={t('Closed Loans')} 
-          value={closedLoans.length.toString()} 
+          value={loansLoading ? '...' : closedLoans.length.toString()} 
           trend={t('Closed')} 
           trendUp={true}
           icon={ShieldCheck} 
@@ -233,7 +238,7 @@ const Dashboard = () => {
         />
         <StatCard 
           title={t('Released')} 
-          value={releasedLoans.length.toString()} 
+          value={loansLoading ? '...' : releasedLoans.length.toString()} 
           trend={t('Returned')} 
           trendUp={true}
           icon={Gem} 
@@ -241,7 +246,7 @@ const Dashboard = () => {
         />
         <StatCard 
           title={t('Interest Collected')} 
-          value={`₹${totalInterestCollected.toLocaleString()}`} 
+          value={loansLoading ? '...' : `₹${totalInterestCollected.toLocaleString()}`} 
           trend={t('Revenue')} 
           trendUp={true}
           icon={TrendingUp} 
@@ -249,7 +254,7 @@ const Dashboard = () => {
         />
         <StatCard 
           title={t('Total Recovered')} 
-          value={`₹${totalLoansRecovered.toLocaleString()}`} 
+          value={loansLoading ? '...' : `₹${totalLoansRecovered.toLocaleString()}`} 
           trend={t('Collected')} 
           trendUp={true}
           icon={Coins} 

@@ -43,8 +43,7 @@ const loginUser = async (identifier, password) => {
         { mobile: identifier },
         { customerCode: identifier }
       ]
-    },
-    include: [{ model: require('../../models').Customer, as: 'customer' }]
+    }
   });
 
   if (!user) {

@@ -98,4 +98,21 @@ api.interceptors.response.use(
   }
 );
 
+// Wrapper to deduplicate GET requests and prevent CanceledError exceptions in UI
+const pendingGetRequests = new Map();
+const originalGet = api.get;
+
+api.get = function (url, config) {
+  const requestKey = url;
+  if (pendingGetRequests.has(requestKey)) {
+    console.log(`[Axios] Duplicate GET request to ${url} merged.`);
+    return pendingGetRequests.get(requestKey);
+  }
+  const promise = originalGet.call(this, url, config).finally(() => {
+    pendingGetRequests.delete(requestKey);
+  });
+  pendingGetRequests.set(requestKey, promise);
+  return promise;
+};
+
 export default api;

@@ -31,14 +31,18 @@ const sequelizeOptions = {
 let sequelize;
 // Use cloud connection strings (DATABASE_URL) if provided
 if (process.env.DATABASE_URL) {
+  const isLocalhost = process.env.DATABASE_URL.includes('localhost') || process.env.DATABASE_URL.includes('127.0.0.1');
+  
   sequelize = new Sequelize(process.env.DATABASE_URL, {
     ...sequelizeOptions,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false
+    ...( !isLocalhost && {
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
+        }
       }
-    }
+    })
   });
 } else {
   sequelize = new Sequelize(
