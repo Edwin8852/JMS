@@ -29,6 +29,7 @@ const CustomerList = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     document.title = "Customers | SDRS Gold Finance";
@@ -41,13 +42,22 @@ const CustomerList = () => {
   };
 
   const handleDeleteCustomer = async (id) => {
-    if (window.confirm('Are you sure you want to delete this customer?')) {
+    if (!id || isDeleting) return;
+
+    const customer = customers.find(c => c.id === id) || selectedCustomer;
+    const customerName = customer ? `${customer.firstName} ${customer.lastName || ''}`.trim() : 'this customer';
+
+    if (window.confirm(`Are you sure you want to delete ${customerName} (${customer?.customerCode || 'ID: ' + id})? This will permanently remove the record if no financial transactions exist.`)) {
       try {
+        setIsDeleting(true);
         await dispatch(deleteCustomer(id)).unwrap();
         toast.success('Customer deleted successfully');
         setIsDetailsModalOpen(false);
+        dispatch(fetchCustomers());
       } catch (error) {
         toast.error(error || 'Failed to delete customer');
+      } finally {
+        setIsDeleting(false);
       }
     }
   };
@@ -234,6 +244,7 @@ const CustomerList = () => {
         customer={selectedCustomer}
         onEdit={() => { setIsDetailsModalOpen(false); setIsEditModalOpen(true); }}
         onDelete={() => handleDeleteCustomer(selectedCustomer?.id)}
+        isDeleting={isDeleting}
       />
 
       <EditCustomerModal

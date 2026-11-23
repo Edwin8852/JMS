@@ -37,6 +37,12 @@ const errorHandler = (err, req, res, next) => {
     message = err.errors.map((e) => e.message).join(', ');
   }
 
+  // Handle Sequelize Foreign Key Constraint Errors
+  if (err.name === 'SequelizeForeignKeyConstraintError') {
+    statusCode = 400;
+    message = 'Cannot delete or update this record: It is referenced by existing financial or scheme records in the database.';
+  }
+
   // Handle Joi/Zod Validation Errors
   if (err.isJoi || err.name === 'ZodError' || err.name === 'ValidationError') {
     statusCode = 400;

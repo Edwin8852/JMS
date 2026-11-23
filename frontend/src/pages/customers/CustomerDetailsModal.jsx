@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { resendCustomerCredentials } from '../../store/slices/customerSlice';
 import { toast } from 'react-toastify';
 
-const CustomerDetailsModal = ({ isOpen, onClose, customer, onEdit, onDelete }) => {
+const CustomerDetailsModal = ({ isOpen, onClose, customer, onEdit, onDelete, isDeleting = false }) => {
   const dispatch = useDispatch();
   const [isResending, setIsResending] = useState(false);
 
@@ -134,9 +134,11 @@ const CustomerDetailsModal = ({ isOpen, onClose, customer, onEdit, onDelete }) =
               </button>
               <button
                 onClick={onDelete}
-                className="px-6 py-3 border border-red-500 text-red-500 rounded-xl font-bold text-sm hover:bg-red-500 hover:text-white transition-all flex items-center gap-2"
+                disabled={isDeleting || isResending}
+                className="px-6 py-3 border border-red-500 text-red-500 rounded-xl font-bold text-sm hover:bg-red-500 hover:text-white transition-all flex items-center gap-2 disabled:opacity-50"
               >
-                Delete
+                {isDeleting && <RefreshCcw size={16} className="animate-spin" />}
+                {isDeleting ? 'Deleting...' : 'Delete'}
               </button>
               <button
                 onClick={handleResendCredentials}

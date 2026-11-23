@@ -1,5 +1,7 @@
-const { Customer, User, GoldLoan, Payment, Order, Notification, ChitSubscriber, ChitScheme, sequelize } = require('../../models');
+const db = require('../../models');
+const { Customer, User, GoldLoan, Payment, Order, Notification, ChitSubscriber, ChitScheme, ChitMember, LoanPayment, Ticket, Document, sequelize } = db;
 const { Op } = require('sequelize');
+const AppError = require('../../shared/utils/AppError');
 const EmailService = require('../notification/email/email.service');
 const NotificationService = require('../notification/notification.service');
 
@@ -102,8 +104,13 @@ class CustomerService {
   }
 
   async getCustomerById(id) {
+    if (!id) {
+      throw new AppError('Customer ID is required', 400);
+    }
     const customer = await Customer.findByPk(id);
-    if (!customer) throw new Error('Customer not found');
+    if (!customer) {
+      throw new AppError('Customer not found', 404);
+    }
     return customer;
   }
 
@@ -113,9 +120,84 @@ class CustomerService {
   }
 
   async deleteCustomer(id) {
-    const customer = await this.getCustomerById(id);
-    await customer.destroy();
-    return { message: 'Customer deleted successfully' };
+    if (!id) {
+      throw new AppError('Customer ID is required', 400);
+    }
+
+    const customer = await Customer.findByPk(id);
+    if (!customer) {
+      throw new AppError('Customer not found', 404);
+    }
+
+    // 1. Safety Check: Verify whether the customer has existing financial transaction records
+    const [
+      loanCount,
+      chitSubscriberCount,
+      chitMemberCount,
+      orderCount,
+      loanPaymentCount
+    ] = await Promise.all([
+      db.GoldLoan ? db.GoldLoan.count({ where: { customerId: id } }) : 0,
+      db.ChitSubscriber ? db.ChitSubscriber.count({ where: { customerId: id } }) : 0,
+      db.ChitMember ? db.ChitMember.count({ where: { customerId: id } }) : 0,
+      db.Order ? db.Order.count({ where: { customerId: id } }) : 0,
+      db.LoanPayment ? db.LoanPayment.count({ where: { customerId: id } }) : 0
+    ]);
+
+    const financialTies = [];
+    if (loanCount > 0) financialTies.push(`${loanCount} Gold Loan record(s)`);
+    if (chitSubscriberCount > 0 || chitMemberCount > 0) {
+      financialTies.push(`${chitSubscriberCount + chitMemberCount} Chit Fund scheme enrollment(s)`);
+    }
+    if (orderCount > 0) financialTies.push(`${orderCount} Jewelry Order(s)`);
+    if (loanPaymentCount > 0) financialTies.push(`${loanPaymentCount} Payment transaction(s)`);
+
+    // In compliance with financial audit standards, records with transaction history cannot be hard-deleted
+    if (financialTies.length > 0) {
+      throw new AppError(
+        `Cannot delete customer '${customer.firstName} ${customer.lastName || ''}' (${customer.customerCode}): Customer has linked financial records (${financialTies.join(', ')}). In compliance with financial audit regulations, accounts with transaction history cannot be deleted.`,
+        400
+      );
+    }
+
+    // 2. Safe Deletion: Customer has no financial history (e.g. test customer or freshly created customer)
+    const transaction = await sequelize.transaction();
+    try {
+      // Clean up auxiliary non-financial records (Tickets, Notifications, Documents)
+      if (db.Ticket) {
+        await db.Ticket.destroy({ where: { customerId: id }, transaction });
+      }
+      if (db.Notification) {
+        await db.Notification.destroy({ where: { customerId: id }, transaction });
+      }
+      if (db.Document) {
+        await db.Document.destroy({ where: { customerId: id }, transaction });
+      }
+
+      // Clean up linked User authentication record if role is CUSTOMER
+      if (db.User) {
+        const userOrConditions = [{ customerCode: customer.customerCode }];
+        if (customer.mobileNumber) userOrConditions.push({ mobile: customer.mobileNumber });
+        if (customer.email) userOrConditions.push({ email: customer.email });
+
+        await db.User.destroy({
+          where: {
+            [Op.or]: userOrConditions,
+            role: 'CUSTOMER'
+          },
+          transaction
+        });
+      }
+
+      // Delete customer record
+      await customer.destroy({ transaction });
+
+      await transaction.commit();
+      return { message: 'Customer deleted successfully' };
+    } catch (error) {
+      await transaction.rollback();
+      throw error;
+    }
   }
 
   async searchCustomers(query) {
